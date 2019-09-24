@@ -11,7 +11,7 @@ namespace Example
     {
         static void Main(string[] args)
         {
-            TestObject TO = new TestObject(); TO.L = new List<TestObject> { new TestObject(), new TestObject() };
+            TestObject TO = new TestObject(); TO.L = new List<TestObject> { /*new TestObject(), new TestObject()*/ };
             StreamWriter Writer = new StreamWriter("./Out.txt", false);
             ClassReadWriter.WriteObject(TO, TO.GetType(), Writer);
             Writer.Flush(); Writer.Close();

@@ -31,6 +31,7 @@ namespace ClassRW
 
         static void WriteSet(FieldInfo Field, Array FieldValue, StreamWriter Writer, int IndentationDepth = 0)
         {
+            if (FieldValue == null || FieldValue.Length == 0) { WriteItem(Field.Name + ":[0\n]",Writer,IndentationDepth); return; }
             WriteItem(Field.Name + ":["+FieldValue.Length, Writer, IndentationDepth);
             foreach (object SubObject in FieldValue)
             {
@@ -47,6 +48,7 @@ namespace ClassRW
 
         static Array IListToArray(IList List)
         {
+            if (List.Count == 0) { return null; }
             Array Arr=Array.CreateInstance(List[0].GetType(),List.Count);
             List.CopyTo(Arr, 0);
             return Arr;
