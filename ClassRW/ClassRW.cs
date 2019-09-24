@@ -74,8 +74,8 @@ namespace ClassRW
                         {
                             var Set = Activator.CreateInstance(thisField.FieldType,int.Parse(LineArr[1].Replace("[","")));
                             for (int i = 0; i < int.Parse(LineArr[1].Trim('[')); i++) {
-                                if (thisField.FieldType.IsArray) { ((Array)Set).SetValue(ReadObject(thisField.DeclaringType, Reader),i); }
-                                if (thisField.FieldType.IsGenericType && thisField.FieldType.GetGenericTypeDefinition() == typeof(List<>)) { ((IList)Set).Add(ReadObject(thisField.DeclaringType, Reader)); }
+                                if (thisField.FieldType.IsArray) { ((Array)Set).SetValue(ReadObject(thisField.FieldType.GetElementType(), Reader),i); }
+                                if (thisField.FieldType.IsGenericType && thisField.FieldType.GetGenericTypeDefinition() == typeof(List<>)) { ((IList)Set).Add(ReadObject(thisField.FieldType.GetGenericArguments()[0], Reader)); }
                             }
                             if (thisField.FieldType.IsArray) { thisField.SetValue(ReturnObject, Set); }
                             else { thisField.SetValue(ReturnObject, Set); }
