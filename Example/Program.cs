@@ -11,9 +11,9 @@ namespace Example
     {
         static void Main(string[] args)
         {
-            TestObject TO = new TestObject(); TO.T0 = new TestObject(); TO.T0.T0 = new TestObject();
+            TestObject TO = new TestObject(); TO.Ii = new List<TestObject> { new TestObject(), new TestObject() };
             StreamWriter Writer = new StreamWriter("./Out.txt", false);
-            ClassReadWriter.WriteObject(TO,TO.GetType(),Writer);
+            ClassReadWriter.WriteObject(TO, TO.GetType(), Writer);
             Writer.Flush(); Writer.Close();
 
             StreamReader Reader = new StreamReader("./Out.txt");
@@ -23,10 +23,9 @@ namespace Example
 
     public class TestObject
     {
+        public List<TestObject> Ii;
         public string S = "yee haw";
         public int I = 9;
-        public TestObject T0;
         public bool B = true;
     }
-
 }
