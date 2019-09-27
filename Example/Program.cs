@@ -12,15 +12,18 @@ namespace Example
         static void Main(string[] args)
         {
             TestObject TO = new TestObject();
-            StreamWriter Writer = new StreamWriter("./Out.txt");
+            StreamWriter Writer = new StreamWriter("./Out.txt",false);
             ClassWriter.WriteObject(TO, Writer);
             Writer.Flush(); Writer.Close();
+
+            StreamReader Reader = new StreamReader("./Out.txt");
+            var V = ClassReader.ReadObject(typeof(TestObject), Reader);
         }
     }
 
     public class TestObject
     {
-        public TestObject2 TO = new TestObject2();
+        public List<TestObject2> TO = new List<TestObject2> { new TestObject2(), new TestObject2() };
         public List<string> L = new List<string> { "Koom", "By", "Ah" };
         public int[] A = new int[] { 1, 5, 1, 2, 4 };
         public string S = "yee\n haw";

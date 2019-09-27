@@ -17,8 +17,9 @@ namespace ClassRW
             foreach (FieldInfo Field in SrcType.GetFields())
             {
                 Type FType = Field.FieldType; ObjectType OType = Master.GetObjectType(FType); Object FObj = Field.GetValue(SrcObject);
-
-                if (OType == ObjectType.Serial) { WriteLine(Field.Name, FObj, Writer, Indentation); }
+                if (OType == ObjectType.Serial) { 
+                    WriteLine(Field.Name, FObj, Writer, Indentation); 
+                }
 
                 else if (OType == ObjectType.Composite) 
                 {
@@ -57,7 +58,7 @@ namespace ClassRW
 
         public static void WriteLine(string FieldName, object FieldValue, StreamWriter Writer, int Indentation = 0)
         {
-            if (FieldValue.GetType() == typeof(string)) { FieldValue = "\"" + HttpUtility.JavaScriptStringEncode(FieldValue.ToString()) + "\""; }
+            if (FieldValue.GetType() == typeof(string)) { FieldValue = "\"" + HttpUtility.UrlEncode(FieldValue.ToString()) + "\""; }
             WriteLine(FieldName + ":" + FieldValue.ToString(),Writer,Indentation);
         }
 
