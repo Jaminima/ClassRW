@@ -11,22 +11,26 @@ namespace Example
     {
         static void Main(string[] args)
         {
-            TestObject TO = new TestObject(); TO.L = new List<TestObject> { /*new TestObject(), new TestObject()*/ };
-            StreamWriter Writer = new StreamWriter("./Out.txt", false);
-            ClassReadWriter.WriteObject(TO, TO.GetType(), Writer);
+            TestObject TO = new TestObject();
+            StreamWriter Writer = new StreamWriter("./Out.txt");
+            ClassWriter.WriteObject(TO, Writer);
             Writer.Flush(); Writer.Close();
-
-            StreamReader Reader = new StreamReader("./Out.txt");
-            var v = ClassReadWriter.ReadObject(TO.GetType(), Reader);
         }
     }
 
     public class TestObject
     {
-        public List<TestObject> L;
+        public TestObject2 TO = new TestObject2();
+        public List<string> L = new List<string> { "Koom", "By", "Ah" };
         public int[] A = new int[] { 1, 5, 1, 2, 4 };
-        public string S = "yee haw";
+        public string S = "yee\n haw";
         public int I = 9;
         public bool B = true;
+    }
+
+    public class TestObject2
+    {
+        public string S = "Arrggg";
+        public int I = 90;
     }
 }
