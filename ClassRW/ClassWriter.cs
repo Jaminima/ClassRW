@@ -16,7 +16,7 @@ namespace ClassRW
             Indentation++;
             foreach (FieldInfo Field in SrcType.GetFields())
             {
-                Type FType = Field.FieldType; ObjectType OType = GetObjectType(FType); Object FObj = Field.GetValue(SrcObject);
+                Type FType = Field.FieldType; ObjectType OType = Master.GetObjectType(FType); Object FObj = Field.GetValue(SrcObject);
 
                 if (OType == ObjectType.Serial) { WriteLine(Field.Name, FObj, Writer, Indentation); }
 
@@ -36,7 +36,7 @@ namespace ClassRW
                     WriteLine(Field.Name + ":[" + Set.Length, Writer, Indentation);
                     foreach (object Item in Set)
                     {
-                        ObjectType ItemType = GetObjectType(Item.GetType());
+                        ObjectType ItemType = Master.GetObjectType(Item.GetType());
                         if (ItemType == ObjectType.Serial) { WriteLine(Item.ToString(), Writer, Indentation + 1); }
                         else
                         {
@@ -48,14 +48,6 @@ namespace ClassRW
                     WriteLine("]", Writer, Indentation);
                 }
             }
-        }
-
-        public static ObjectType GetObjectType(Type T)
-        {
-            if ((T.IsGenericType && T.GetGenericTypeDefinition() == typeof(List<>))) { return ObjectType.List; }
-            else if (T.IsArray) { return ObjectType.Array; }
-            else if (T.IsSerializable) { return ObjectType.Serial; }
-            else { return ObjectType.Composite; }
         }
 
         public static void WriteLine(string Line, StreamWriter Writer, int Indentation = 0)
@@ -76,13 +68,5 @@ namespace ClassRW
             Set.CopyTo(Arr, 0);
             return Arr;
         }
-    }
-
-    public enum ObjectType
-    {
-        Serial,
-        Array,
-        List,
-        Composite
     }
 }
