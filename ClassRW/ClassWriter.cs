@@ -17,7 +17,10 @@ namespace ClassRW
             foreach (FieldInfo Field in SrcType.GetFields())
             {
                 Type FType = Field.FieldType; ObjectType OType = Master.GetObjectType(FType); Object FObj = Field.GetValue(SrcObject);
-                if (OType == ObjectType.Serial) { 
+
+                if (FObj == null) { WriteLine(Field.Name + ":NULL", Writer, Indentation); }
+
+                else if (OType == ObjectType.Serial) { 
                     WriteLine(Field.Name, FObj, Writer, Indentation); 
                 }
 

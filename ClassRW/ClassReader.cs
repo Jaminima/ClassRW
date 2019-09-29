@@ -21,7 +21,9 @@ namespace ClassRW
                     FieldInfo LineField = ObjType.GetField(LineArr[0]); Type LineType = LineField.FieldType;
                     ObjectType LineObjType = Master.GetObjectType(LineType);
 
-                    if (LineObjType == ObjectType.Serial) { 
+                    if (Line.EndsWith("NULL")) { LineField.SetValue(Obj, null); }
+
+                    else if (LineObjType == ObjectType.Serial) { 
                         if (LineType == typeof(string)) { LineArr[1] = HttpUtility.UrlDecode(LineArr[1].Trim('\"')); }
                         LineField.SetValue(Obj, Convert.ChangeType(LineArr[1],LineType)); 
                     }
@@ -43,6 +45,13 @@ namespace ClassRW
                             if (ArrayObjType == ObjectType.Serial) { Set.SetValue(Convert.ChangeType(Reader.ReadLine(), ArrayType), i); }
                             else { Set.SetValue(ReadObject(ArrayType, Reader), i); }
                         }
+
+                        if (LineObjType == ObjectType.List) {
+                            var LSet = Activator.CreateInstance(LineType, new object[] { Set.Length });
+                            foreach (object Item in Set) { ((IList)LSet).Add(Item); }
+                            LineField.SetValue(Obj, LSet);
+                        }
+                        else { LineField.SetValue(Obj, Set); }
                     }
                 }
                 else if (Line.EndsWith("}")) { return Obj; }
