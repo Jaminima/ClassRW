@@ -20,11 +20,11 @@ namespace ClassRW
 
                 if (FObj == null) { WriteLine(Field.Name + ":NULL", Writer, Indentation); }
 
-                else if (OType == ObjectType.Serial) { 
-                    WriteLine(Field.Name, FObj, Writer, Indentation); 
+                else if (OType == ObjectType.Serial) {
+                    WriteLine(Field.Name, FObj, Writer, Indentation);
                 }
 
-                else if (OType == ObjectType.Composite) 
+                else if (OType == ObjectType.Composite)
                 {
                     WriteLine(Field.Name + ":{", Writer, Indentation);
                     WriteObject(FObj, Writer, Indentation);
@@ -37,21 +37,42 @@ namespace ClassRW
                     if (OType == ObjectType.Array) { Set = (Array)FObj; }
                     else { Set = IListToArray((IList)FObj); }
 
-                    WriteLine(Field.Name + ":[" + Set.Length, Writer, Indentation);
-                    foreach (object Item in Set)
-                    {
-                        ObjectType ItemType = Master.GetObjectType(Item.GetType());
-                        if (ItemType == ObjectType.Serial) { WriteLine(Item.ToString(), Writer, Indentation + 1); }
-                        else
-                        {
-                            WriteLine("{", Writer, Indentation + 1);
-                            WriteObject(Item, Writer, Indentation + 1);
-                            WriteLine("}", Writer, Indentation + 1);
-                        }
-                    }
+                    string DimensionSet = "";
+                    for (int i = 0; i < Set.Rank; i++) { DimensionSet += Set.GetLength(i) + ","; } DimensionSet = DimensionSet.TrimEnd(',');
+                    WriteLine(Field.Name + ":[" + DimensionSet, Writer, Indentation);
+                    WriteArray(Set, Writer, Indentation);
                     WriteLine("]", Writer, Indentation);
                 }
             }
+        }
+
+        static void WriteArray(Array Set, StreamWriter Writer, int Indentation = 0, int Dimension = 0, int[] Path = null)
+        {
+            bool IsDeepest = Set.Rank-1==Dimension;
+            if (Path == null) { Path = new int[Set.Rank]; }
+            Indentation++;
+            for (int i = 0; i < Set.GetLength(Dimension); i++)
+            {
+                if (IsDeepest)
+                {
+                    object Item = Set.GetValue(Path); ObjectType ItemType = Master.GetObjectType(Item.GetType());
+                    if (ItemType == ObjectType.Serial) { WriteLine(Item.ToString(), Writer, Indentation); }
+                    else
+                    {
+                        WriteLine("{", Writer, Indentation);
+                        WriteObject(Item, Writer, Indentation);
+                        WriteLine("}", Writer, Indentation);
+                    }
+                }
+                else
+                {
+                    //WriteLine("[", Writer, Indentation);
+                    WriteArray(Set, Writer, Indentation, Dimension + 1, Path);
+                    //WriteLine("]", Writer, Indentation);
+                }
+                Path[Dimension]++;
+            }
+            Path[Dimension] = 0;
         }
 
         public static void WriteLine(string Line, StreamWriter Writer, int Indentation = 0)

@@ -35,15 +35,18 @@ namespace ClassRW
 
                     else if (LineObjType == ObjectType.Array || LineObjType == ObjectType.List)
                     {
-                        Array Set; int Length = int.Parse(LineArr[1].TrimStart('[')); Type ArrayType; ObjectType ArrayObjType;
+                        Array Set; int[] Lengths = GetLengths(LineArr[1].TrimStart('[')); Type ArrayType; ObjectType ArrayObjType;
                         if (LineObjType == ObjectType.Array) { ArrayType = LineType.GetElementType(); }
                         else { ArrayType = LineType.GetGenericArguments()[0]; }
                         ArrayObjType = Master.GetObjectType(ArrayType);
 
-                        Set = Array.CreateInstance(ArrayType, Length);
-                        for (int i = 0; i < Length; i++) {
-                            if (ArrayObjType == ObjectType.Serial) { Set.SetValue(Convert.ChangeType(Reader.ReadLine(), ArrayType), i); }
-                            else { Set.SetValue(ReadObject(ArrayType, Reader), i); }
+                        Set = Array.CreateInstance(ArrayType, Lengths);
+                        int[] Path = new int[Lengths.Length];
+
+                        for (int i = 0; i < Lengths.Sum(); i++) {
+                            if (ArrayObjType == ObjectType.Serial) { Set.SetValue(Convert.ChangeType(Reader.ReadLine(), ArrayType), Path); }
+                            else { Set.SetValue(ReadObject(ArrayType, Reader), Path); }
+                            Path = IncrementPath(Path, Lengths);
                         }
 
                         if (LineObjType == ObjectType.List) {
@@ -57,6 +60,24 @@ namespace ClassRW
                 else if (Line.EndsWith("}")) { return Obj; }
             }
             return Obj;
+        }
+
+        static int[] IncrementPath (int[] Path,int[] MaxPath)
+        {
+            Path[Path.Length - 1]++;
+            for (int j = Path.Length - 1; j > 0; j--)
+            {
+                if (Path[j] >= MaxPath[j]) { Path[j] = 0; Path[j - 1]++; }
+            }
+            return Path;
+        }
+
+        static int[] GetLengths(string Line)
+        {
+            string[] LineParts = Line.Split(',');
+            int[] Lengths = new int[LineParts.Length];
+            for (int i = 0; i < Lengths.Length; i++) { Lengths[i] = int.Parse(LineParts[i]); }
+            return Lengths;
         }
     }
 }
