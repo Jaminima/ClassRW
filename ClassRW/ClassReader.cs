@@ -42,8 +42,8 @@ namespace ClassRW
 
                         Set = Array.CreateInstance(ArrayType, Lengths);
                         int[] Path = new int[Lengths.Length];
-
-                        for (int i = 0; i < Lengths.Sum(); i++) {
+                        int PathLength = GetPathLength(Lengths);
+                        for (int i=0;i<PathLength;i++) {
                             if (ArrayObjType == ObjectType.Serial) { Set.SetValue(Convert.ChangeType(Reader.ReadLine(), ArrayType), Path); }
                             else { Set.SetValue(ReadObject(ArrayType, Reader), Path); }
                             Path = IncrementPath(Path, Lengths);
@@ -60,6 +60,12 @@ namespace ClassRW
                 else if (Line.EndsWith("}")) { return Obj; }
             }
             return Obj;
+        }
+
+        static int GetPathLength(int[] Path)
+        {
+            int Length = Path.Sum() + Path.Length - 1;
+            return Length;
         }
 
         static int[] IncrementPath (int[] Path,int[] MaxPath)
